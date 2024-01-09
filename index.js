@@ -1,4 +1,3 @@
-import * as THREE from "three.js";
 import express from "express";
 
 const app = express();
