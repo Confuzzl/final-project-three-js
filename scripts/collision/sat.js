@@ -27,7 +27,11 @@ export function sat(a, b) {
  * @param {Circle} b
  * @returns {boolean}
  */
-function circleCircle(a, b) {}
+function circleCircle(a, b) {
+    const distance2 = a.centroid.distanceToSquared(b);
+    const minDistance2 = a.copy().add(b).lengthSq();
+    return distance2 < minDistance2;
+}
 /**
  * @param {Polygon} a
  * @param {Polygon} b
