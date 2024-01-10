@@ -1,6 +1,6 @@
 import { Collidable } from "./collidable.js";
 import { Polygon } from "./polygon.js";
-import { Circle } from "./circle";
+import { Circle } from "./circle.js";
 import { Vector3 } from "https://unpkg.com/three@0.126.1/build/three.module.js";
 
 /**
@@ -28,8 +28,10 @@ export function sat(a, b) {
  * @returns {boolean}
  */
 function circleCircle(a, b) {
-    const distance2 = a.centroid.distanceToSquared(b);
-    const minDistance2 = a.copy().add(b).lengthSq();
+    const distance2 = a.centroid.distanceToSquared(b.centroid);
+    // console.log(distance2);
+    const minDistance2 = (a.radius + b.radius) ** 2;
+    // console.log(minDistance2);
     return distance2 < minDistance2;
 }
 /**

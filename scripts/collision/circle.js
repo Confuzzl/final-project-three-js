@@ -4,9 +4,13 @@ export class Circle extends Collidable {
     /**@type {number}*/
     radius;
 
-    /**@param {number} radius*/
-    constructor(radius) {
-        super();
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} radius
+     */
+    constructor(x, y, radius) {
+        super(x, y);
         this.radius = radius;
     }
 }

@@ -1,18 +1,24 @@
 import {
-    Vector3,
+    Vector3 as Vector2,
     Quaternion,
 } from "https://unpkg.com/three@0.126.1/build/three.module.js";
 
 export class Collidable {
-    /**@type {Vector3}*/
+    /**@type {Vector2}*/
     centroid;
     /**@type {Quaternion}*/
     rotation = new Quaternion();
 
     /**
-     * @param {Vector3} centroid
+     * @param {number} x
+     * @param {number} y
      */
-    constructor(centroid) {
-        this.centroid = centroid;
+    constructor(x, y) {
+        this.centroid = new Vector2(x, y);
+    }
+
+    /**@returns {number[]}*/
+    centroidArray() {
+        return [this.centroid.x, this.centroid.y, 0];
     }
 }

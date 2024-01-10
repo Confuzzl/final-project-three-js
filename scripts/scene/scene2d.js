@@ -4,15 +4,15 @@ import {
     AmbientLight,
     DirectionalLight,
     WebGLRenderer,
-    Mesh,
-    BoxGeometry,
 } from "https://unpkg.com/three@0.126.1/build/three.module.js";
 import { Camera2D } from "./camera2d.js";
 import { collidableToMesh } from "../rendering.js";
 import { Circle } from "../collision/circle.js";
+import { sat } from "../collision/sat.js";
+import { Polygon } from "../collision/polygon.js";
 
 export class Scene2D extends Scene {
-    renderer = new WebGLRenderer();
+    renderer = new WebGLRenderer({ antialias: true });
     camera;
     static defaultMaterial = new MeshStandardMaterial({
         color: 0xffffff,
@@ -44,11 +44,20 @@ export class Scene2D extends Scene {
         //     cube.position.x = i * 2;
         //     super.add(cube);
         // }
-        const circle = new Circle(5);
-        const mesh = collidableToMesh(circle);
-        super.add(mesh);
+        // const a = new Circle(0, 0, 5);
+        // const b = new Circle(0, 8, 3);
+        // super.add(collidableToMesh(a));
+        // super.add(collidableToMesh(b));
+        // console.log(sat(a, b));
 
-        this.camera.position.set(0, 3, 5);
+        // const poly = new Polygon(0, 0, [
+        //     [-1, 0],
+        //     [1, 0],
+        //     [0, 2],
+        // ]);
+        super.add(collidableToMesh(Polygon.ngon(0, 0, 5, 1)));
+
+        this.camera.position.set(0, 0, 10);
     }
 
     render() {
