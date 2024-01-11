@@ -4,6 +4,9 @@ import {
     AmbientLight,
     DirectionalLight,
     WebGLRenderer,
+    ArrowHelper,
+    Vector3,
+    GridHelper,
 } from "https://unpkg.com/three@0.126.1/build/three.module.js";
 import { Camera2D } from "./camera2d.js";
 import { collidableToMesh } from "../rendering.js";
@@ -37,27 +40,35 @@ export class Scene2D extends Scene {
     }
 
     #create() {
-        // const geometry = new BoxGeometry(1, 1, 1);
-
-        // for (let i = -3; i <= 3; i++) {
-        //     const cube = new Mesh(geometry, this.defaultMaterial);
-        //     cube.position.x = i * 2;
-        //     super.add(cube);
-        // }
-        // const a = new Circle(0, 0, 5);
-        // const b = new Circle(0, 8, 3);
-        // super.add(collidableToMesh(a));
-        // super.add(collidableToMesh(b));
-        // console.log(sat(a, b));
-
-        // const poly = new Polygon(0, 0, [
-        //     [-1, 0],
-        //     [1, 0],
-        //     [0, 2],
-        // ]);
-        super.add(collidableToMesh(Polygon.ngon(0, 0, 5, 1)));
-
         this.camera.position.set(0, 0, 10);
+        {
+            const a = new Circle(3, 0, 1);
+            const b = new Circle(3, 2, 2);
+
+            console.log(sat(a, b));
+
+            super.add(collidableToMesh(a));
+            super.add(collidableToMesh(b));
+        }
+        {
+            const a = Polygon.ngon(0, 0, 4, 1);
+            const b = Polygon.ngon(0, 2, 3, 1);
+
+            console.log(sat(a, b));
+
+            super.add(collidableToMesh(a));
+            super.add(collidableToMesh(b));
+
+            // const dir = new Vector3(0.5, -0.86602540378, 0);
+            const dir = new Vector3(Math.sqrt(2) / -2, Math.sqrt(2) / 2, 0);
+            const dir2 = dir.clone().negate();
+            super.add(new ArrowHelper(dir, new Vector3(), 5, 0xffff00));
+            super.add(new ArrowHelper(dir2, new Vector3(), 5, 0xff0000));
+            const grid = new GridHelper(10, 10, 0x888888, 0x444444);
+            grid.position.z = -1;
+            grid.rotation.x = Math.PI / 2;
+            super.add(grid);
+        }
     }
 
     render() {

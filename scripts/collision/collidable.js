@@ -1,5 +1,5 @@
 import {
-    Vector3 as Vector2,
+    Vector2,
     Quaternion,
 } from "https://unpkg.com/three@0.126.1/build/three.module.js";
 

@@ -1,9 +1,32 @@
 import { Vector2 } from "https://unpkg.com/three@0.126.1/build/three.module.js";
 import { Collidable } from "./collidable.js";
 
+export class Edge {
+    /**@type {Vector2} */
+    tail;
+    /**@type {Vector2} */
+    head;
+
+    /**
+     * @param {Vector2} tail
+     * @param {Vector2} head
+     */
+    constructor(tail, head) {
+        this.tail = tail;
+        this.head = head;
+    }
+
+    asVector() {
+        return this.head.clone().sub(this.tail);
+    }
+}
+
 export class Polygon extends Collidable {
     /**@type {Vector2[]} */
-    vertices;
+    localVertices;
+
+    /**@type {Edge[]}*/
+    edges;
 
     /**
      * @param {number} x
@@ -13,7 +36,12 @@ export class Polygon extends Collidable {
     constructor(x, y, vertices) {
         super(x, y);
         if (vertices.length < 3) throw new Error("Vertices must be >=3");
-        this.vertices = vertices.map((pair) => new Vector2(pair[0], pair[1]));
+        this.localVertices = vertices.map(
+            (pair) => new Vector2(pair[0], pair[1])
+        );
+        this.edges = this.localVertices.map(
+            (v, i, arr) => new Edge(v, arr[(i + 1) % arr.length])
+        );
     }
 
     /**

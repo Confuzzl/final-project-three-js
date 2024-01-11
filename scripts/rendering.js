@@ -26,7 +26,7 @@ export function collidableToMesh(collidable) {
  */
 function polygonToMesh(polygon) {
     const out = new Mesh(
-        new ShapeGeometry(new Shape(polygon.vertices)),
+        new ShapeGeometry(new Shape(polygon.localVertices)),
         Scene2D.defaultMaterial
     );
     out.position.set(...polygon.centroidArray());
