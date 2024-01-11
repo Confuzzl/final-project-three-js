@@ -1,5 +1,6 @@
-import { Vector2 } from "https://unpkg.com/three@0.126.1/build/three.module.js";
+import { Vector2 } from "three.js";
 import { Collidable } from "./collidable.js";
+import { AABB } from "./aabb.js";
 
 export class Edge {
     /**@type {Vector2} */
@@ -42,6 +43,28 @@ export class Polygon extends Collidable {
         this.edges = this.localVertices.map(
             (v, i, arr) => new Edge(v, arr[(i + 1) % arr.length])
         );
+
+        // const min = new Vector2(
+        //     Number.POSITIVE_INFINITY,
+        //     Number.POSITIVE_INFINITY
+        // );
+        // const max = new Vector2(
+        //     Number.NEGATIVE_INFINITY,
+        //     Number.NEGATIVE_INFINITY
+        // );
+        // for (const v of this.localVertices) {
+        //     const vertex = v.clone().add(this.centroid);
+        //     min.x = Math.min(min.x, vertex.x);
+        //     max.x = Math.max(max.x, vertex.x);
+        //     min.y = Math.min(min.y, vertex.y);
+        //     max.y = Math.max(max.y, vertex.y);
+        // }
+        // this.aabb = new AABB(min, max);
+        this.aabb = AABB.expandingBase();
+        this.localVertices.forEach((v) => {
+            const point = v.clone().add(this.centroid);
+            this.aabb.expand(point);
+        });
     }
 
     /**

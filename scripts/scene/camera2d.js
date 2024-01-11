@@ -1,4 +1,4 @@
-import { OrthographicCamera } from "https://unpkg.com/three@0.126.1/build/three.module.js";
+import { OrthographicCamera } from "three.js";
 
 export class Camera2D extends OrthographicCamera {
     constructor(width, height, zoom = 50) {

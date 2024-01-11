@@ -1,13 +1,9 @@
-import {
-    Mesh,
-    CircleGeometry,
-    Shape,
-    ShapeGeometry,
-} from "https://unpkg.com/three@0.126.1/build/three.module.js";
+import { Mesh, CircleGeometry, Shape, ShapeGeometry } from "three.js";
 import { Collidable } from "./collision/collidable.js";
 import { Polygon } from "./collision/polygon.js";
 import { Circle } from "./collision/circle.js";
-import { Scene2D } from "./scene/scene2d.js";
+import { material, randomMaterial } from "./scene/scene2d.js";
+import { AABB } from "./collision/aabb.js";
 
 export const CIRCLE_SEGMENTS = 32;
 
@@ -27,7 +23,7 @@ export function collidableToMesh(collidable) {
 function polygonToMesh(polygon) {
     const out = new Mesh(
         new ShapeGeometry(new Shape(polygon.localVertices)),
-        Scene2D.defaultMaterial
+        randomMaterial()
     );
     out.position.set(...polygon.centroidArray());
     return out;
@@ -39,8 +35,21 @@ function polygonToMesh(polygon) {
 function circleToMesh(circle) {
     const out = new Mesh(
         new CircleGeometry(circle.radius, CIRCLE_SEGMENTS),
-        Scene2D.defaultMaterial
+        randomMaterial()
     );
     out.position.set(...circle.centroidArray());
+    return out;
+}
+
+/**
+ * @param {AABB} aabb
+ * @param {number} color
+ * @returns {Mesh}
+ */
+export function aabbToMesh(aabb, color) {
+    const out = new Mesh(
+        new ShapeGeometry(new Shape(aabb.getVertices())),
+        material(color, true)
+    );
     return out;
 }

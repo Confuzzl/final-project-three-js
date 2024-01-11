@@ -1,7 +1,7 @@
 import { Collidable } from "./collidable.js";
 import { Edge, Polygon } from "./polygon.js";
 import { Circle } from "./circle.js";
-import { Vector2 } from "https://unpkg.com/three@0.126.1/build/three.module.js";
+import { Vector2 } from "three.js";
 
 /**
  * @param {Collidable} a
@@ -29,9 +29,7 @@ export function sat(a, b) {
  */
 function circleCircle(a, b) {
     const distance2 = a.centroid.distanceToSquared(b.centroid);
-    // console.log(distance2);
     const minDistance2 = (a.radius + b.radius) ** 2;
-    // console.log(minDistance2);
     return distance2 < minDistance2;
 }
 
@@ -52,14 +50,12 @@ class Axis {
     /**@param {Vector2} point*/
     projectToA(point) {
         const dot = this.direction.dot(point);
-        console.log(dot);
         this.minA = Math.min(this.minA, dot);
         this.maxA = Math.max(this.maxA, dot);
     }
     /**@param {Vector2} point*/
     projectToB(point) {
         const dot = this.direction.dot(point);
-        console.log(dot);
         this.minB = Math.min(this.minB, dot);
         this.maxB = Math.max(this.maxB, dot);
     }
@@ -69,9 +65,7 @@ class Axis {
     }
 
     isIntersecting() {
-        const out = this.depth();
-        console.log(out);
-        return out < 0;
+        return this.depth() < 0;
     }
 }
 
@@ -100,23 +94,15 @@ function intersectingOnAxis(a, b, edge) {
     const v = edge.asVector();
     const perp = new Vector2(v.y, -v.x);
     const axis = new Axis(perp);
-    console.log(axis.direction);
     a.localVertices.forEach((v) => {
         const vertex = v.clone().add(a.centroid);
-        console.log(vertex);
         axis.projectToA(vertex);
     });
     b.localVertices.forEach((v) => {
         const vertex = v.clone().add(b.centroid);
-        console.log(vertex);
         axis.projectToB(vertex);
     });
-    console.log(
-        `${a.localVertices.length}[${axis.minA} ${axis.maxA}] ${b.localVertices.length}[${axis.minB} ${axis.maxB}]`
-    );
-    const out = axis.isIntersecting();
-    console.log(out);
-    return out;
+    return axis.isIntersecting();
 }
 
 /**

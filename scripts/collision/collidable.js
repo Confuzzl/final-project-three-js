@@ -1,9 +1,10 @@
-import {
-    Vector2,
-    Quaternion,
-} from "https://unpkg.com/three@0.126.1/build/three.module.js";
+import { Vector2, Quaternion } from "three.js";
+import { AABB } from "./aabb.js";
 
 export class Collidable {
+    /**@type {AABB}*/
+    aabb = AABB.expandingBase();
+
     /**@type {Vector2}*/
     centroid;
     /**@type {Quaternion}*/
@@ -21,4 +22,6 @@ export class Collidable {
     centroidArray() {
         return [this.centroid.x, this.centroid.y, 0];
     }
+
+    update() {}
 }
