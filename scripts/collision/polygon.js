@@ -1,4 +1,4 @@
-import { Vector2 } from "three.js";
+import { Vector2 } from "three";
 import { Collidable } from "./collidable.js";
 import { AABB } from "./aabb.js";
 
@@ -20,14 +20,39 @@ export class Edge {
     asVector() {
         return this.head.clone().sub(this.tail);
     }
+
+    length() {
+        return this.asVector().length();
+    }
+
+    /**@param {Vector2} point*/
+    containsPoint(point) {
+        //x bound
+        if (
+            point.x < Math.min(this.tail.x, this.head.x) ||
+            point.x > Math.max(this.tail.x, this.head.x)
+        )
+            return false;
+        //y bound
+        if (
+            point.y < Math.min(this.tail.y, this.head.y) ||
+            point.y > Math.max(this.tail.y, this.head.y)
+        )
+            return false;
+
+        const tailToPointSlope =
+            (point.y - this.tail.y) / (point.x - this.tail.x);
+        const slope = (this.head.y - this.tail.y) / (this.head.x - this.tail.x);
+        return tailToPointSlope === slope;
+    }
 }
 
 export class Polygon extends Collidable {
     /**@type {Vector2[]} */
-    localVertices;
+    localVertices = null;
 
     /**@type {Edge[]}*/
-    edges;
+    edges = null;
 
     /**
      * @param {number} x
@@ -44,22 +69,6 @@ export class Polygon extends Collidable {
             (v, i, arr) => new Edge(v, arr[(i + 1) % arr.length])
         );
 
-        // const min = new Vector2(
-        //     Number.POSITIVE_INFINITY,
-        //     Number.POSITIVE_INFINITY
-        // );
-        // const max = new Vector2(
-        //     Number.NEGATIVE_INFINITY,
-        //     Number.NEGATIVE_INFINITY
-        // );
-        // for (const v of this.localVertices) {
-        //     const vertex = v.clone().add(this.centroid);
-        //     min.x = Math.min(min.x, vertex.x);
-        //     max.x = Math.max(max.x, vertex.x);
-        //     min.y = Math.min(min.y, vertex.y);
-        //     max.y = Math.max(max.y, vertex.y);
-        // }
-        // this.aabb = new AABB(min, max);
         this.aabb = AABB.expandingBase();
         this.localVertices.forEach((v) => {
             const point = v.clone().add(this.centroid);
@@ -74,15 +83,19 @@ export class Polygon extends Collidable {
      * @param {number} sides
      * @param {number} radius
      */
-    static ngon(x, y, sides, radius) {
+    static ngon(x, y, sides, radius = 1) {
         if (sides < 3) throw new Error("Must have at least 3 sides");
-        const vertices = [];
-        for (let i = 0; i < sides; i++) {
-            vertices.push([
-                radius * Math.cos((2 * Math.PI * i) / sides),
-                radius * Math.sin((2 * Math.PI * i) / sides),
-            ]);
-        }
+        // const vertices = [];
+        // for (let i = 0; i < sides; i++) {
+        //     vertices.push([
+        //         radius * Math.cos((2 * Math.PI * i) / sides),
+        //         radius * Math.sin((2 * Math.PI * i) / sides),
+        //     ]);
+        // }
+        const vertices = [...Array(sides)].map((_, i) => [
+            radius * Math.cos((2 * Math.PI * i) / sides),
+            radius * Math.sin((2 * Math.PI * i) / sides),
+        ]);
         return new Polygon(x, y, vertices);
     }
 }

@@ -1,14 +1,25 @@
 import { Collidable } from "./collidable.js";
 import { Edge, Polygon } from "./polygon.js";
 import { Circle } from "./circle.js";
-import { Vector2 } from "three.js";
+import { Vector2 } from "three";
+import { AABB } from "./aabb.js";
 
 /**
  * @param {Collidable} a
  * @param {Collidable} b
  * @returns {boolean}
  */
-export function sat(a, b) {
+export function isColliding(a, b) {
+    if (!a.aabb.intersects(b.aabb)) return false;
+    return sat(a, b);
+}
+
+/**
+ * @param {Collidable} a
+ * @param {Collidable} b
+ * @returns {boolean}
+ */
+function sat(a, b) {
     if (a instanceof Circle) {
         if (b instanceof Circle) return circleCircle(a, b);
         if (b instanceof Polygon) return polygonCircle(b, a);
@@ -34,7 +45,8 @@ function circleCircle(a, b) {
 }
 
 class Axis {
-    direction;
+    /**@type {Vector2}*/
+    direction = null;
 
     minA = Number.POSITIVE_INFINITY;
     maxA = Number.NEGATIVE_INFINITY;
@@ -72,7 +84,6 @@ class Axis {
 /**
  * @param {Polygon} a
  * @param {Polygon} b
- * @returns {boolean}
  */
 function polygonPolygon(a, b) {
     for (const edgeA of a.edges) {
@@ -88,7 +99,6 @@ function polygonPolygon(a, b) {
  * @param {Polygon} a
  * @param {Polygon} b
  * @param {Edge} edge
- * @returns {boolean}
  */
 function intersectingOnAxis(a, b, edge) {
     const v = edge.asVector();
@@ -108,6 +118,8 @@ function intersectingOnAxis(a, b, edge) {
 /**
  * @param {Polygon} a
  * @param {Circle} b
- * @returns {boolean}
  */
-function polygonCircle(a, b) {}
+function polygonCircle(a, b) {
+    for (const edge of a.edges) if (b.edgeInside(edge)) return true;
+    return false;
+}

@@ -1,4 +1,4 @@
-import { Vector2, Quaternion } from "three.js";
+import { Vector2, Quaternion } from "three";
 import { AABB } from "./aabb.js";
 
 export class Collidable {
@@ -18,7 +18,6 @@ export class Collidable {
         this.centroid = new Vector2(x, y);
     }
 
-    /**@returns {number[]}*/
     centroidArray() {
         return [this.centroid.x, this.centroid.y, 0];
     }

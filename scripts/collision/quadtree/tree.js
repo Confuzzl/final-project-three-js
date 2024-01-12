@@ -2,24 +2,72 @@ import { Collidable } from "../collidable.js";
 import { AABB } from "../aabb.js";
 
 class Node {
-    isLeaf;
+    /**@type {Node}*/
+    parent = null;
 
-    childrenIndices = [];
+    /**@type {Node}*/
+    childA = null;
+    /**@type {Node}*/
+    childB = null;
 
-    leafChild;
-    count;
+    /**@type {AABB}*/
+    box = null;
 
-    static createBranch() {}
-    static createLeaf() {}
+    /**@type {Collidable}*/
+    data = null;
+
+    isLeaf() {
+        return !this.data;
+    }
+
+    updateAABB() {
+        this.box = this.isLeaf()
+            ? this.data.aabb.clone()
+            : this.childA.box.clone().union(this.childB.box);
+    }
+
+    getSibling() {
+        return this.parent.childA === this
+            ? this.parent.childB
+            : this.parent.childA;
+    }
+
+    /**
+     * @param {Node} a
+     * @param {Node} b
+     */
+    makeBranch(a, b) {
+        a.parent = this;
+        b.parent = this;
+
+        this.childA = a;
+        this.childB = b;
+    }
+    /**@param {Collidable} collidable*/
+    makeLeaf(collidable) {
+        this.data = collidable;
+    }
 }
+
 export class QuadTree {
     boundingBox = AABB.expandingBase();
-    root = new Node();
-    nodes = [];
+    /**@type {Node}*/
+    root = null;
 
     /**@param {Collidable[]} array*/
     constructor(array) {
-        for (const collidable of array) {
+        array.forEach((collidable) => {
+            this.add(collidable);
+        });
+    }
+
+    /**@param {Collidable} collidable*/
+    add(collidable) {
+        if (this.root) {
+        } else {
+            this.root = new Node();
+            this.root.makeLeaf(collidable);
+            this.root.updateAABB();
         }
     }
 }

@@ -1,4 +1,11 @@
-import { Mesh, CircleGeometry, Shape, ShapeGeometry } from "three.js";
+import {
+    Mesh,
+    CircleGeometry,
+    Shape,
+    ShapeGeometry,
+    LineLoop,
+    BufferGeometry,
+} from "three";
 import { Collidable } from "./collision/collidable.js";
 import { Polygon } from "./collision/polygon.js";
 import { Circle } from "./collision/circle.js";
@@ -47,7 +54,12 @@ function circleToMesh(circle) {
  * @returns {Mesh}
  */
 export function aabbToMesh(aabb, color) {
-    const out = new Mesh(
+    // const out = new Mesh(
+    //     new ShapeGeometry(new Shape(aabb.getVertices())),
+    //     material(color, true)
+    // );
+    const out = new LineLoop(
+        // new BufferGeometry().setFromPoints(aabb.getVertices()),
         new ShapeGeometry(new Shape(aabb.getVertices())),
         material(color, true)
     );

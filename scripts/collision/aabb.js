@@ -1,10 +1,10 @@
-import { Vector2 } from "three.js";
+import { Vector2 } from "three";
 
 export class AABB {
     /**@type {Vector2}*/
-    min;
+    min = null;
     /**@type {Vector2}*/
-    max;
+    max = null;
 
     /**
      * @param {Vector2} min
@@ -15,12 +15,15 @@ export class AABB {
         this.max = max;
     }
 
-    /**@returns {AABB}*/
     static expandingBase() {
         return new AABB(
             new Vector2(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
             new Vector2(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY)
         );
+    }
+
+    clone() {
+        return new AABB(this.min, this.max);
     }
 
     /**@param {Vector2} point*/
@@ -33,7 +36,7 @@ export class AABB {
 
     /**@param {AABB} other*/
     union(other) {
-        const out = expandingBase();
+        const out = AABB.expandingBase();
         out.expand(this.min);
         out.expand(this.max);
         out.expand(other.min);
@@ -41,17 +44,14 @@ export class AABB {
         return out;
     }
 
-    /**@returns {Vector2}*/
     size() {
         return this.max.clone().sub(this.min);
     }
 
-    /**@returns {Vector2}*/
     midpoint() {
         return this.min.clone().add(this.max).divideScalar(2);
     }
 
-    /**@returns {Vector2[]}*/
     getVertices() {
         return [
             this.min,
@@ -61,33 +61,23 @@ export class AABB {
         ];
     }
 
-    /**
-     * @param {Vector2} point
-     * @returns {boolean}
-     */
-    pointIntersecting(point) {
+    /**@param {Vector2} point*/
+    contains(point) {
         return (
             this.min.x < point.x &&
             point.x < this.max.x &&
             this.min.y < point.y &&
-            point.y < this.max.y &&
-            this.min.z < point.z &&
-            point.z < this.max.z
+            point.y < this.max.y
         );
     }
 
-    /**
-     * @param {AABB} other
-     * @returns {boolean}
-     */
-    aabbIntersecting(other) {
+    /**@param {AABB} other*/
+    intersects(other) {
         return (
             this.min.x < other.max.x &&
             this.max.x > other.min.x &&
             this.min.y < other.max.y &&
-            this.max.y > other.max.y &&
-            this.min.z < other.max.z &&
-            this.max.z > other.min.z
+            this.max.y > other.max.y
         );
     }
 }
