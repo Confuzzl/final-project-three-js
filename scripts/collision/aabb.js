@@ -31,6 +31,16 @@ export class AABB {
         this.max.y = Math.max(this.max.y, point.y);
     }
 
+    /**@param {AABB} other*/
+    union(other) {
+        const out = expandingBase();
+        out.expand(this.min);
+        out.expand(this.max);
+        out.expand(other.min);
+        out.expand(other.max);
+        return out;
+    }
+
     /**@returns {Vector2}*/
     size() {
         return this.max.clone().sub(this.min);
