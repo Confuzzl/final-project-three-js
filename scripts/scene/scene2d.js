@@ -74,7 +74,7 @@ export class Scene2D extends Scene {
         super.add(
             new LineSegments(
                 new BufferGeometry().setFromPoints([a, b]),
-                new LineBasicMaterial({ color: color })
+                new LineBasicMaterial({ color: color, linewidth: 5 })
             )
         );
     }
@@ -99,10 +99,10 @@ export class Scene2D extends Scene {
     #create() {
         this.camera.position.set(0, 0, 10);
 
-        this.#addCollidable(new Circle(3, 0, 1), true);
-        this.#addCollidable(new Circle(3, 2, 2), true);
-        this.#addCollidable(Polygon.ngon(0, 0, 4, 1), true);
-        this.#addCollidable(Polygon.ngon(0, 2, 3, 1), true);
+        // this.#addCollidable(new Circle(3, 0, 1), true);
+        // this.#addCollidable(new Circle(3, 2, 2), true);
+        // this.#addCollidable(Polygon.ngon(0, 0, 4, 1), true);
+        // this.#addCollidable(Polygon.ngon(0, 2, 3, 1), true);
 
         // const dir = new Vector3(0.5, -0.86602540378, 0);
         // const dir = new Vector3(-0.70710678118, 0.70710678118, 0);
@@ -112,9 +112,8 @@ export class Scene2D extends Scene {
 
         const circle = new Circle(4, -5, 2);
         this.#addCollidable(circle, true);
-        const p = Polygon.ngon(2, -3, 5, 1.5);
+        const p = Polygon.ngon(2, -3, 4, 1.5);
         this.#addCollidable(p, true);
-
         console.log(isColliding(circle, p));
 
         const grid = new GridHelper(

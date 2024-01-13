@@ -31,22 +31,17 @@ export class Circle extends Collidable {
 
     /**@param {Edge} edge*/
     edgeInside(edge) {
-        if (this.pointInside(edge.tail) || this.pointInside(edge.head))
-            return true;
-        const dot = edge
-            .asVector()
-            .normalize()
-            .dot(this.centroid.clone().sub(edge.tail));
-        const point = edge.tail.clone().add(
-            edge
-                .asVector()
-                .clone()
-                .multiplyScalar(dot / edge.length())
-        );
-        // console.log(dot, point);
-        // console.log(this.centroid.clone().sub(point));
-        const distance2 = this.centroid.distanceToSquared(point);
-        // console.log(distance2, this.radius ** 2);
-        return distance2 < this.radius ** 2;
+        // https://www.jeffreythompson.org/collision-detection/line-circle.php
+        if (this.pointInside(edge.tail()) || this.pointInside(edge.head()))
+            return false;
+
+        const dot =
+            this.centroid.clone().sub(edge.tail()).dot(edge.asVector()) /
+            edge.asVector().lengthSq();
+        const point = edge.at(dot);
+        const distance = this.centroid.distanceTo(point);
+        if (!edge.containsPoint(point)) return false;
+
+        return distance < this.radius;
     }
 }
