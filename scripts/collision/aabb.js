@@ -61,6 +61,7 @@ export class AABB {
 
     /**@param {Vector2} point*/
     contains(point) {
+        // https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
         return (
             this.min.x < point.x &&
             point.x < this.max.x &&
@@ -71,11 +72,12 @@ export class AABB {
 
     /**@param {AABB} other*/
     intersects(other) {
+        // https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
         return (
             this.min.x < other.max.x &&
             this.max.x > other.min.x &&
             this.min.y < other.max.y &&
-            this.max.y > other.max.y
+            this.max.y > other.min.y
         );
     }
 }
