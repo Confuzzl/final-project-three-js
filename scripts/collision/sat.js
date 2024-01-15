@@ -104,11 +104,11 @@ function intersectingOnAxis(a, b, edge) {
     const v = edge.asVector();
     const perp = new Vector2(v.y, -v.x);
     const axis = new Axis(perp);
-    a.localVertices.forEach((v) => {
+    a.globalVertices().forEach((v) => {
         const vertex = v.clone().add(a.centroid);
         axis.projectToA(vertex);
     });
-    b.localVertices.forEach((v) => {
+    b.globalVertices().forEach((v) => {
         const vertex = v.clone().add(b.centroid);
         axis.projectToB(vertex);
     });

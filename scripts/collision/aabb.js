@@ -1,16 +1,14 @@
 import { Vector2 } from "three";
 
 export class AABB {
-    /**@type {Vector2}*/
-    min = null;
-    /**@type {Vector2}*/
-    max = null;
+    min = new Vector2();
+    max = new Vector2();
 
     /**
      * @param {Vector2} min
      * @param {Vector2} max
      */
-    constructor(min = new Vector2(), max = new Vector2()) {
+    constructor(min, max) {
         this.min = min;
         this.max = max;
     }

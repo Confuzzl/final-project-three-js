@@ -7,18 +7,14 @@ export class Circle extends Collidable {
     /**@type {number}*/
     radius = 0;
 
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @param {number} radius
-     */
-    constructor(x, y, radius) {
-        super(x, y);
+    /**@param {number} radius*/
+    constructor(radius) {
+        super();
         this.radius = radius;
 
         this.aabb = new AABB(
-            this.centroid.clone().subScalar(radius),
-            this.centroid.clone().addScalar(radius)
+            new Vector2().subScalar(radius),
+            new Vector2().addScalar(radius)
         );
     }
 
@@ -48,5 +44,15 @@ export class Circle extends Collidable {
         const distance2 = this.centroid.distanceToSquared(point);
         // console.log(distance2, this.radius ** 2);
         return distance2 < this.radius ** 2;
+    }
+
+    /**@override*/
+    updateAABB() {
+        this.aabb.min.add(this.centroid);
+        this.aabb.max.add(this.centroid);
+    }
+    /**@override*/
+    rotate(theta) {
+        // noop
     }
 }

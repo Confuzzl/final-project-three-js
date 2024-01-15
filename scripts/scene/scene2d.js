@@ -1,6 +1,5 @@
 import {
     Scene,
-    MeshStandardMaterial,
     AmbientLight,
     DirectionalLight,
     WebGLRenderer,
@@ -13,21 +12,18 @@ import {
     Points,
     PointsMaterial,
     LineBasicMaterial,
+    PlaneGeometry,
+    Material,
+    LineLoop,
 } from "three";
 import { Camera2D } from "./camera2d.js";
 import { collidableToMesh, aabbToMesh } from "../rendering.js";
 import { Circle } from "../collision/circle.js";
 import { isColliding } from "../collision/sat.js";
-import { Edge, Polygon } from "../collision/polygon.js";
+import { Polygon } from "../collision/polygon.js";
 import { Collidable } from "../collision/collidable.js";
-
-export function material(color, wireframe = false) {
-    return new MeshBasicMaterial({ color: color, wireframe: wireframe });
-}
-
-export function randomMaterial() {
-    return material(Math.floor(Math.random() * (1 << 24)));
-}
+import { GameObject } from "../gameobject.js";
+import { Simulation } from "../simulation.js";
 
 export class Scene2D extends Scene {
     renderer = new WebGLRenderer({ antialias: true });
@@ -38,8 +34,11 @@ export class Scene2D extends Scene {
 
     gridSize = 20;
 
+    simulation = new Simulation();
+
     constructor(width, height) {
         super();
+        this.name = "SCENE";
 
         this.renderer.setSize(width, height);
         this.renderer.setClearColor(0xdddddd);
@@ -50,19 +49,6 @@ export class Scene2D extends Scene {
         // super.add(this.ambient);
         // this.light.position.set(3, 4, 5);
         // super.add(this.light);
-
-        this.#create();
-    }
-
-    /**
-     * @param {Collidable} collidable
-     * @param {boolean} showAABB
-     */
-    #addCollidable(collidable, showAABB = false) {
-        const mesh = collidableToMesh(collidable);
-        super.add(mesh);
-        if (showAABB)
-            super.add(aabbToMesh(collidable.aabb, mesh.material.color));
     }
 
     /**
@@ -96,13 +82,26 @@ export class Scene2D extends Scene {
         );
     }
 
-    #create() {
+    init() {
         this.camera.position.set(0, 0, 10);
 
-        this.#addCollidable(new Circle(3, 0, 1), true);
-        this.#addCollidable(new Circle(3, 2, 2), true);
-        this.#addCollidable(Polygon.ngon(0, 0, 4, 1), true);
-        this.#addCollidable(Polygon.ngon(0, 2, 3, 1), true);
+        // this.#addCollidable(new Circle(3, 0, 1), true);
+        // this.#addCollidable(new Circle(3, 2, 2), true);
+        // this.test.rotate(1);
+        // this.#addCollidable(this.test, true);
+
+        // this.#addCollidable(Polygon.ngon(0, 2, 3, 1), true);
+
+        const a = new GameObject(2, 2, new Circle(3), true);
+        const b = new GameObject(-1, 0, Polygon.ngon(3, 1), true);
+        // this.a.rotate(0.5);
+        // console.log(this.a.collidable.centroid);
+        // console.log(this.a.collidable.localVertices);
+        // console.log(this.a.collidable.globalVertices());
+        // console.log(this.a.collidable.aabb);
+
+        // this.a.translate(new Vector2(2, 2));
+        // this.a.rotate(1);
 
         // const dir = new Vector3(0.5, -0.86602540378, 0);
         // const dir = new Vector3(-0.70710678118, 0.70710678118, 0);
@@ -110,38 +109,38 @@ export class Scene2D extends Scene {
         // super.add(new ArrowHelper(dir, new Vector3(), 5, 0xff0000));
         // super.add(new ArrowHelper(dir2, new Vector3(), 5, 0x00ffff));
 
-        const circle = new Circle(4, -5, 2);
-        this.#addCollidable(circle, true);
-        const p = Polygon.ngon(2, -3, 5, 1.5);
-        this.#addCollidable(p, true);
-
-        console.log(isColliding(circle, p));
+        // const circle = new Circle(4, -5, 2);
+        // this.#addCollidable(circle, true);
+        // const p = Polygon.ngon(2, -3, 5, 1.5);
+        // this.#addCollidable(p, true);
 
         const grid = new GridHelper(
             this.gridSize,
             this.gridSize,
             0x000000,
-            0x888888
+            0xcccccc
         );
         grid.position.z = -1;
         grid.rotation.x = Math.PI / 2;
-        super.add(grid);
+        this.add(grid);
     }
 
     clock = new Clock();
     dt = 0;
     fps = 1 / 30;
-    ups = 1 / 60;
 
     render() {
         requestAnimationFrame(this.render.bind(this));
 
-        // this.dt += this.clock.getDelta();
+        this.dt += this.clock.getDelta();
 
-        // if (this.dt >= this.fps) {
-        this.renderer.render(this, this.camera);
-        // }
-        // if (this.dt >= this.ups) {
-        // }
+        if (this.dt >= this.fps) {
+            this.renderer.render(this, this.camera);
+            this.objectSet.forEach((object) => {
+                object.update(this.dt);
+            });
+
+            this.dt = 0;
+        }
     }
 }

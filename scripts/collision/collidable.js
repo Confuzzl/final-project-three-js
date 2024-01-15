@@ -5,22 +5,25 @@ export class Collidable {
     /**@type {AABB}*/
     aabb = AABB.expandingBase();
 
-    /**@type {Vector2}*/
-    centroid;
-    /**@type {Quaternion}*/
-    rotation = new Quaternion();
+    centroid = new Vector2();
+    rotation = 0;
+    velocity = new Vector2();
+    mass = 1;
 
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    constructor(x, y) {
-        this.centroid = new Vector2(x, y);
-    }
+    constructor() {}
 
     centroidArray() {
         return [this.centroid.x, this.centroid.y, 0];
     }
 
     update() {}
+    /**@param {Vector2} v */
+    translate(v) {
+        this.centroid.add(v);
+        this.updateAABB();
+    }
+    /**@abstract*/
+    updateAABB() {}
+    /**@abstract*/
+    rotate(theta) {}
 }
