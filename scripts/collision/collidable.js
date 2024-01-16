@@ -1,5 +1,7 @@
 import { Vector2, Quaternion } from "three";
 import { AABB } from "./aabb.js";
+import { Simulation } from "../simulation.js";
+import { MAIN_SCENE, MAIN_SIMULATION } from "../script.js";
 
 export class Collidable {
     /**@type {AABB}*/
@@ -16,7 +18,11 @@ export class Collidable {
         return [this.centroid.x, this.centroid.y, 0];
     }
 
-    update() {}
+    /**@param {number} dt*/
+    update(dt) {
+        this.velocity.add(MAIN_SIMULATION.getGravity().multiplyScalar(dt));
+        this.translate(this.velocity);
+    }
     /**@param {Vector2} v */
     translate(v) {
         this.centroid.add(v);

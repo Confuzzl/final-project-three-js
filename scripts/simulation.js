@@ -1,7 +1,16 @@
 import { Vector2 } from "three";
-import { MAIN_SCENE } from "./script";
+import { MAIN_SCENE } from "./script.js";
 
 export class Simulation {
+    gravityStrength = 0.001;
+    gravityDirection = new Vector2(0, -1);
+
+    getGravity() {
+        return this.gravityDirection
+            .clone()
+            .multiplyScalar(this.gravityStrength);
+    }
+
     /**@type {Set<GameObject>}*/
     objectSet = new Set();
 

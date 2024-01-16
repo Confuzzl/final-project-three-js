@@ -47,23 +47,6 @@ export class Edge {
             this.tail().distanceTo(point) + this.head().distanceTo(point) ===
             this.asVector().length()
         );
-        // //x bound
-        // if (
-        //     point.x < Math.min(this.#tail.x, this.#head.x) ||
-        //     point.x > Math.max(this.#tail.x, this.#head.x)
-        // )
-        //     return false;
-        // //y bound
-        // if (
-        //     point.y < Math.min(this.#tail.y, this.#head.y) ||
-        //     point.y > Math.max(this.#tail.y, this.#head.y)
-        // )
-        //     return false;
-        // const tailToPointSlope =
-        //     (point.y - this.#tail.y) / (point.x - this.#tail.x);
-        // const slope =
-        //     (this.#head.y - this.#tail.y) / (this.#head.x - this.#tail.x);
-        // return tailToPointSlope === slope;
     }
 }
 
@@ -72,7 +55,7 @@ export class Polygon extends Collidable {
     localVertices = [];
 
     /**@type {Edge[]}*/
-    edges = null;
+    edges = [];
 
     /**@param {number[][]} vertices*/
     constructor(vertices) {

@@ -4,6 +4,9 @@ import { Vector2 } from "three";
 import { Edge } from "./polygon.js";
 
 export class Circle extends Collidable {
+    /**@type {AABB}*/
+    BASE_AABB = null;
+
     /**@type {number}*/
     radius = 0;
 
@@ -12,10 +15,10 @@ export class Circle extends Collidable {
         super();
         this.radius = radius;
 
-        this.aabb = new AABB(
-            new Vector2().subScalar(radius),
-            new Vector2().addScalar(radius)
-        );
+        // this.aabb = new AABB(
+        //     new Vector2().subScalar(radius),
+        //     new Vector2().addScalar(radius)
+        // );
     }
 
     /**@param {Vector2} point*/
@@ -43,8 +46,10 @@ export class Circle extends Collidable {
 
     /**@override*/
     updateAABB() {
-        this.aabb.min.add(this.centroid);
-        this.aabb.max.add(this.centroid);
+        this.aabb = new AABB(
+            this.centroid.clone().subScalar(this.radius),
+            this.centroid.clone().addScalar(this.radius)
+        );
     }
     /**@override*/
     rotate(theta) {

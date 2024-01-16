@@ -1,6 +1,6 @@
 import { Group, Mesh, Vector2, Vector3 } from "three";
 import { Collidable } from "./collision/collidable.js";
-import { MAIN_SCENE } from "./script.js";
+import { MAIN_SCENE, MAIN_SIMULATION } from "./script.js";
 import {
     aabbToMesh,
     collidableToMesh,
@@ -44,8 +44,8 @@ export class GameObject {
         this.group.position.set(...collidable.centroidArray());
         this.group.add(this.mainMesh);
         this.toggleAABB(showAABB);
-        // MAIN_SCENE.addGameObject(this);
-        MAIN_SCENE.simulation.addGameObject(this);
+
+        MAIN_SIMULATION.addGameObject(this);
     }
 
     /**@param {boolean} b */
@@ -64,14 +64,23 @@ export class GameObject {
     /**@param {number} dt */
     update(dt) {
         if (this.static) return;
+        this.collidable.update(dt);
+        this.#refreshPosition();
+    }
+
+    #refreshPosition() {
+        this.group.position.x = this.collidable.centroid.x;
+        this.group.position.y = this.collidable.centroid.y;
     }
 
     /**@param {Vector2} v */
     translate(v) {
         this.collidable.translate(v);
-        this.group.position.add(new Vector3(v.x, v.y, 0));
+        // this.group.position.add(new Vector3(v.x, v.y, 0));
+        this.#refreshPosition();
     }
 
+    /**@param {number} theta */
     rotate(theta) {
         this.collidable.rotate(theta);
         this.mainMesh.rotateZ(theta);

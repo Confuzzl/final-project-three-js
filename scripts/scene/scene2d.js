@@ -124,10 +124,7 @@ export class Scene2D extends Scene {
 
         if (this.dt >= this.fps) {
             this.renderer.render(this, this.camera);
-            this.objectSet.forEach((object) => {
-                object.update(this.dt);
-            });
-
+            this.simulation.update(this.dt);
             this.dt = 0;
         }
     }
