@@ -20,8 +20,9 @@ export class Collidable {
 
     /**@param {number} dt*/
     update(dt) {
-        this.velocity.add(MAIN_SIMULATION.getGravity().multiplyScalar(dt));
-        this.translate(this.velocity);
+        // if (this.centroid.y <= -5) return;
+        // this.velocity.add(MAIN_SIMULATION.getGravity().multiplyScalar(dt));
+        // this.translate(this.velocity);
     }
     /**@param {Vector2} v */
     translate(v) {

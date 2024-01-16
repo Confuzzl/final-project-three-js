@@ -1,8 +1,10 @@
-import { Collidable } from "./collidable.js";
-import { Edge, Polygon } from "./polygon.js";
-import { Circle } from "./circle.js";
+import { Collidable } from "../collidable.js";
+import { Polygon } from "../polygon.js";
+import { Edge } from "../edge.js";
+import { Circle } from "../circle.js";
 import { Vector2 } from "three";
-import { AABB } from "./aabb.js";
+import { AABB } from "../aabb.js";
+import { Axis } from "./axis.js";
 
 /**
  * @param {Collidable} a
@@ -42,43 +44,6 @@ function circleCircle(a, b) {
     const distance2 = a.centroid.distanceToSquared(b.centroid);
     const minDistance2 = (a.radius + b.radius) ** 2;
     return distance2 < minDistance2;
-}
-
-class Axis {
-    /**@type {Vector2}*/
-    direction = null;
-
-    minA = Number.POSITIVE_INFINITY;
-    maxA = Number.NEGATIVE_INFINITY;
-    minB = Number.POSITIVE_INFINITY;
-    maxB = Number.NEGATIVE_INFINITY;
-
-    /**@param {Vector2} direction*/
-    constructor(direction) {
-        this.direction = direction.clone();
-        this.direction.normalize();
-    }
-
-    /**@param {Vector2} point*/
-    projectToA(point) {
-        const dot = this.direction.dot(point);
-        this.minA = Math.min(this.minA, dot);
-        this.maxA = Math.max(this.maxA, dot);
-    }
-    /**@param {Vector2} point*/
-    projectToB(point) {
-        const dot = this.direction.dot(point);
-        this.minB = Math.min(this.minB, dot);
-        this.maxB = Math.max(this.maxB, dot);
-    }
-
-    depth() {
-        return Math.max(this.minA, this.minB) - Math.min(this.maxA, this.maxB);
-    }
-
-    isIntersecting() {
-        return this.depth() < 0;
-    }
 }
 
 /**

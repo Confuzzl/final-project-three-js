@@ -1,54 +1,7 @@
-import { Vector2 } from "three";
+import { Vector2, Vector3 } from "three";
 import { Collidable } from "./collidable.js";
 import { AABB } from "./aabb.js";
-
-export class Edge {
-    /**@type {Polygon}*/
-    #parent = null;
-    /**@type {Vector2}*/
-    #tail = null;
-    /**@type {Vector2}*/
-    #head = null;
-
-    /**
-     * @param {Polygon} parent
-     * @param {Vector2} tail
-     * @param {Vector2} head
-     */
-    constructor(parent, tail, head) {
-        this.#parent = parent;
-        this.#tail = tail;
-        this.#head = head;
-    }
-
-    tail() {
-        return this.#tail.clone().add(this.#parent.centroid);
-    }
-
-    head() {
-        return this.#head.clone().add(this.#parent.centroid);
-    }
-
-    asVector() {
-        return this.#head.clone().sub(this.#tail);
-    }
-
-    /**
-     * @param {number} t
-     * @returns {Vector2}
-     */
-    at(t) {
-        return this.tail().add(this.asVector().multiplyScalar(t));
-    }
-
-    /**@param {Vector2} point*/
-    containsPoint(point) {
-        return (
-            this.tail().distanceTo(point) + this.head().distanceTo(point) ===
-            this.asVector().length()
-        );
-    }
-}
+import { Edge } from "./edge.js";
 
 export class Polygon extends Collidable {
     /**@type {Vector2[]} */
@@ -103,11 +56,11 @@ export class Polygon extends Collidable {
      * @param {number} sides
      * @param {number} radius
      */
-    static ngon(sides, radius = 1) {
+    static ngon(sides, radius = 1, offset = 0) {
         if (sides < 3) throw new Error("Must have at least 3 sides");
         const vertices = [...Array(sides)].map((_, i) => [
-            radius * Math.cos((2 * Math.PI * i) / sides),
-            radius * Math.sin((2 * Math.PI * i) / sides),
+            radius * Math.cos((2 * Math.PI * i) / sides + offset),
+            radius * Math.sin((2 * Math.PI * i) / sides + offset),
         ]);
         return new Polygon(vertices);
     }

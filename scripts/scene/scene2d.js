@@ -19,11 +19,12 @@ import {
 import { Camera2D } from "./camera2d.js";
 import { collidableToMesh, aabbToMesh } from "../rendering.js";
 import { Circle } from "../collision/circle.js";
-import { isColliding } from "../collision/sat.js";
+import { isColliding } from "../collision/algorithms/sat.js";
 import { Polygon } from "../collision/polygon.js";
 import { Collidable } from "../collision/collidable.js";
 import { GameObject } from "../gameobject.js";
 import { Simulation } from "../simulation.js";
+import { edgeCircleClosestPoints, sat2 } from "../collision/algorithms/sat2.js";
 
 export class Scene2D extends Scene {
     renderer = new WebGLRenderer({ antialias: true });
@@ -85,16 +86,27 @@ export class Scene2D extends Scene {
     init() {
         this.camera.position.set(0, 0, 10);
 
-        const a = new GameObject(2, 2, new Circle(3), true);
-        const b = new GameObject(-1, 0, Polygon.ngon(3, 1), true);
+        // const a = new GameObject(1, 2, new Circle(1), true);
+        const a = new GameObject(
+            -2,
+            4,
+            Polygon.ngon(4, Math.SQRT2, Math.PI / 4),
+            true
+        );
+        const b = new GameObject(2, 2, new Circle(2), true);
+        // console.log(a.collidable.edges[0].closestPointTo(b.collidable));
+        for (const edge of a.collidable.edges) {
+            console.log(edgeCircleClosestPoints(edge, b.collidable));
+            // console.log(b.collidable.closestPointTo(edge));
+        }
+
+        // console.log(sat2(a.collidable, b.collidable));
+        // const b = new GameObject(-1, 0, Polygon.ngon(4, 1), true);
         // this.a.rotate(0.5);
         // console.log(this.a.collidable.centroid);
         // console.log(this.a.collidable.localVertices);
         // console.log(this.a.collidable.globalVertices());
         // console.log(this.a.collidable.aabb);
-
-        // this.a.translate(new Vector2(2, 2));
-        // this.a.rotate(1);
 
         // const dir = new Vector3(0.5, -0.86602540378, 0);
         // const dir = new Vector3(-0.70710678118, 0.70710678118, 0);

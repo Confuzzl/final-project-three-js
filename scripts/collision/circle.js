@@ -1,7 +1,7 @@
 import { Collidable } from "./collidable.js";
 import { AABB } from "./aabb.js";
 import { Vector2 } from "three";
-import { Edge } from "./polygon.js";
+import { Edge } from "./edge.js";
 
 export class Circle extends Collidable {
     /**@type {AABB}*/
@@ -28,19 +28,25 @@ export class Circle extends Collidable {
         return distance2 < minDistance2;
     }
 
+    /**@param {Vector2} point*/
+    signedDistance(point) {
+        return point.distanceTo(this.centroid) - this.radius;
+    }
+
     /**@param {Edge} edge*/
     edgeInside(edge) {
         // https://www.jeffreythompson.org/collision-detection/line-circle.php
         if (this.pointInside(edge.tail()) || this.pointInside(edge.head()))
-            return false;
+            return true;
 
-        const dot =
-            this.centroid.clone().sub(edge.tail()).dot(edge.asVector()) /
-            edge.asVector().lengthSq();
-        const point = edge.at(dot);
-        const distance = this.centroid.distanceTo(point);
+        // const dot =
+        //     this.centroid.clone().sub(edge.tail()).dot(edge.asVector()) /
+        //     edge.asVector().lengthSq();
+        // const point = edge.at(dot);
+        const point = edge.closestPointTo(this);
         if (!edge.containsPoint(point)) return false;
 
+        const distance = this.centroid.distanceTo(point);
         return distance < this.radius;
     }
 

@@ -1,9 +1,13 @@
 import { Vector2 } from "three";
 import { MAIN_SCENE } from "./script.js";
+import { AABB } from "./collision/aabb.js";
 
 export class Simulation {
-    gravityStrength = 0.001;
-    gravityDirection = new Vector2(0, -1);
+    gravityStrength = 0.5;
+    gravityDirection = new Vector2(0, -1).normalize();
+    terminalMagnitude = -10;
+
+    // bounds = new AABB(new Vector2(), new Vector2());
 
     getGravity() {
         return this.gravityDirection

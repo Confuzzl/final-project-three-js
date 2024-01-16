@@ -69,6 +69,10 @@ function circleToMesh(circle, color) {
         new CircleGeometry(circle.radius, CIRCLE_SEGMENTS),
         material(color)
     );
+    // const out = new LineLoop(
+    //     new CircleGeometry(circle.radius, CIRCLE_SEGMENTS),
+    //     lineMaterial(color)
+    // );
     // out.position.set(...circle.centroidArray());
     return out;
 }
