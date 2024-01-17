@@ -2,6 +2,7 @@ import { Vector2 } from "three";
 import { Collidable } from "../collidable.js";
 import { Polygon } from "../polygon.js";
 import { Circle } from "../circle.js";
+import { Edge } from "../edge.js";
 
 // https://www.cs.ubc.ca/~rhodin/2020_2021_CPSC_427/lectures/D_CollisionTutorial.pdf
 
@@ -90,19 +91,9 @@ function circleCircle(a, b) {
 function polygonCircle(a, b, reversed) {
     const out = new CollisionInfo();
     for (const edge of a.edges) {
-        // console.log("EDGE");
-        // console.log(edge);
-        // console.log(edge.closestPointTo(b));
-        // no collision
-        // if (!b.edgeInside(edge)) continue;
-        // console.log("EDGE INSIDE");
-        // // const edgeNormal = edge.normal.clone();
-        // const closestPointEdgeLine = edge.closestPointTo(b);
-        // const closestPointCircle = b.closestPointTo(edge);
-        // console.log(closestPointEdgeLine, closestPointCircle);
+        if (!b.edgeInside(edge)) continue;
     }
     for (const vertex of a.globalVertices()) {
-        // no collision
         if (!b.pointInside(vertex)) continue;
     }
     return out;
@@ -114,7 +105,7 @@ function polygonCircle(a, b, reversed) {
  * @param {Vector2} normal
  * @param {Vector2} point
  */
-export function linePoint(linePoint, lineDirection, normal, point) {
+export function linePointQuery(linePoint, lineDirection, normal, point) {
     const difference = point.clone().sub(linePoint);
     const direction = lineDirection.normalize();
     const dot = difference.dot(direction);
@@ -129,18 +120,21 @@ export function linePoint(linePoint, lineDirection, normal, point) {
  * @param {Edge} edge
  * @param {Circle} circle
  */
-export function edgeCircleClosestPoints(edge, circle) {
-    const direction = Math.sign(
-        edge.normal.dot(circle.centroid.clone().sub(edge.tail()))
+export function edgeCircleQuery(edge, circle) {
+    const info = linePointQuery(
+        edge.tail(),
+        edge.asVector(),
+        edge.normal(),
+        circle.centroid
     );
-    const scale = circle.radius * direction;
+    const scale =
+        Math.sign(info.signedDistance) *
+        (Math.abs(info.signedDistance) - circle.radius);
     console.log(scale);
-    const circlePoint = circle.centroid
-        .clone()
-        .sub(edge.normal.clone().multiplyScalar(scale));
-    console.log(circlePoint);
-    console.log(
-        linePoint(edge.tail(), edge.asVector(), edge.normal, circle.centroid)
-    );
-    return { edgePoint: null, circlePoint: circlePoint };
+    return {
+        edgePoint: info.point.clone(),
+        circlePoint: info.point
+            .clone()
+            .add(edge.normal().multiplyScalar(scale)),
+    };
 }

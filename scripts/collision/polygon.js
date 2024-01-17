@@ -24,14 +24,14 @@ export class Polygon extends Collidable {
 
     globalVertices() {
         return this.localVertices.map((v) => {
+            const rot = this.rotation;
+            const cos = Math.cos(rot),
+                sin = Math.sin(rot);
             const x = v.x,
                 y = v.y;
-            const newX =
-                x * Math.cos(this.rotation) - y * Math.sin(this.rotation);
-            const newY =
-                y * Math.cos(this.rotation) + x * Math.sin(this.rotation);
-            const rotated = new Vector2(newX, newY);
-            return rotated.add(this.centroid);
+            const newX = x * cos - y * sin;
+            const newY = y * cos + x * sin;
+            return new Vector2(newX, newY).add(this.centroid);
         });
     }
 

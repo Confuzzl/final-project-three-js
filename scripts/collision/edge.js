@@ -5,7 +5,7 @@ export class Edge {
     #parent = null;
     #tail = new Vector2();
     #head = new Vector2();
-    normal = new Vector2();
+    #normal = new Vector2();
 
     /**
      * @param {Polygon} parent
@@ -16,15 +16,16 @@ export class Edge {
         this.#parent = parent;
         this.#tail = tail;
         this.#head = head;
-        this.normal = this.#calculateNormal();
+        this.#normal = this.#calculateNormal();
     }
 
-    /**@param {Vector2} point*/
-    signedDistance(point) {
-        return (
-            point.clone().sub(this.tail()).dot(this.normal) /
-            this.normal.length()
-        );
+    normal() {
+        const x = this.#normal.x,
+            y = this.#normal.y;
+        const rot = this.#parent.rotation;
+        const cos = Math.cos(rot),
+            sin = Math.sin(rot);
+        return new Vector2(x * cos - y * sin, y * cos + x * sin);
     }
 
     #calculateNormal() {
@@ -38,15 +39,31 @@ export class Edge {
     }
 
     tail() {
-        return this.#tail.clone().add(this.#parent.centroid);
+        const rot = this.#parent.rotation;
+        const cos = Math.cos(rot),
+            sin = Math.sin(rot);
+        const x = this.#tail.x,
+            y = this.#tail.y;
+        const newX = x * cos - y * sin;
+        const newY = y * cos + x * sin;
+        const rotated = new Vector2(newX, newY);
+        return rotated.add(this.#parent.centroid);
     }
 
     head() {
-        return this.#head.clone().add(this.#parent.centroid);
+        const rot = this.#parent.rotation;
+        const x = this.#head.x,
+            y = this.#head.y;
+        const cos = Math.cos(rot),
+            sin = Math.sin(rot);
+        const newX = x * cos - y * sin;
+        const newY = y * cos + x * sin;
+        const rotated = new Vector2(newX, newY);
+        return rotated.add(this.#parent.centroid);
     }
 
     asVector() {
-        return this.#head.clone().sub(this.#tail);
+        return this.head().sub(this.tail());
     }
 
     /**

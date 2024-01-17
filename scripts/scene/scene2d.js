@@ -15,16 +15,20 @@ import {
     PlaneGeometry,
     Material,
     LineLoop,
+    Line,
+    ArrowHelper,
+    Vector3,
 } from "three";
 import { Camera2D } from "./camera2d.js";
-import { collidableToMesh, aabbToMesh } from "../rendering.js";
+import { collidableToMesh, aabbToMesh, randomColor } from "../rendering.js";
 import { Circle } from "../collision/circle.js";
 import { isColliding } from "../collision/algorithms/sat.js";
 import { Polygon } from "../collision/polygon.js";
 import { Collidable } from "../collision/collidable.js";
 import { GameObject } from "../gameobject.js";
 import { Simulation } from "../simulation.js";
-import { edgeCircleClosestPoints, sat2 } from "../collision/algorithms/sat2.js";
+import { edgeCircleQuery, sat2 } from "../collision/algorithms/sat2.js";
+import { Edge } from "../collision/edge.js";
 
 export class Scene2D extends Scene {
     renderer = new WebGLRenderer({ antialias: true });
@@ -58,10 +62,32 @@ export class Scene2D extends Scene {
      * @param {number} color
      */
     #addLineSegment(a, b, color = 0xff0000) {
-        super.add(
-            new LineSegments(
+        this.add(
+            new Line(
                 new BufferGeometry().setFromPoints([a, b]),
-                new LineBasicMaterial({ color: color, linewidth: 5 })
+                new LineBasicMaterial({ color: color })
+            )
+        );
+    }
+
+    /**
+     * @param {Vector2} tail
+     * @param {Vector2} direction
+     * @param {number} color
+     */
+    #addArrow(tail, direction, color) {
+        const length = direction.length();
+        const dirNorm = direction.clone().divideScalar(length);
+        const dir3 = new Vector3(dirNorm.x, dirNorm.y, 0);
+        const origin = new Vector3(tail.x, tail.y, 0);
+        this.add(
+            new ArrowHelper(
+                dir3,
+                origin,
+                length,
+                color,
+                0.2 * length,
+                0.2 * length
             )
         );
     }
@@ -71,7 +97,7 @@ export class Scene2D extends Scene {
      * @param {number} color
      */
     #addPoint(point, color = 0x00ff00) {
-        super.add(
+        this.add(
             new Points(
                 new BufferGeometry().setFromPoints([point]),
                 new PointsMaterial({
@@ -88,17 +114,26 @@ export class Scene2D extends Scene {
 
         // const a = new GameObject(1, 2, new Circle(1), true);
         const a = new GameObject(
-            -2,
-            4,
-            Polygon.ngon(4, Math.SQRT2, Math.PI / 4),
+            -1,
+            2,
+            Polygon.ngon(4, 2 * Math.SQRT2, Math.PI / 4),
+            // Polygon.ngon(3, 1),
             true
         );
+        // a.rotate(0.1);
         const b = new GameObject(2, 2, new Circle(2), true);
         // console.log(a.collidable.edges[0].closestPointTo(b.collidable));
+
         for (const edge of a.collidable.edges) {
-            console.log(edgeCircleClosestPoints(edge, b.collidable));
-            // console.log(b.collidable.closestPointTo(edge));
+            const info = edgeCircleQuery(edge, b.collidable);
+            const color = randomColor();
+            console.log(info);
+            this.#addArrow(edge.tail(), edge.asVector(), color);
+            this.#addArrow(edge.at(0.5), edge.normal(), color);
+            this.#addPoint(info.edgePoint, color);
+            this.#addPoint(info.circlePoint, color);
         }
+        // sat2(a.collidable, b.collidable);
 
         // console.log(sat2(a.collidable, b.collidable));
         // const b = new GameObject(-1, 0, Polygon.ngon(4, 1), true);
