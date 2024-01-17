@@ -113,27 +113,35 @@ export class Scene2D extends Scene {
         this.camera.position.set(0, 0, 10);
 
         // const a = new GameObject(1, 2, new Circle(1), true);
-        const a = new GameObject(
+
+        const a = new GameObject(-3, 2, new Circle(2), true);
+        const b = new GameObject(
             -1,
-            2,
-            Polygon.ngon(4, 2 * Math.SQRT2, Math.PI / 4),
+            4,
+            Polygon.ngon(4, 1 * Math.SQRT2, Math.PI / 4),
             // Polygon.ngon(3, 1),
             true
         );
-        // a.rotate(0.1);
-        const b = new GameObject(2, 2, new Circle(2), true);
-        // console.log(a.collidable.edges[0].closestPointTo(b.collidable));
+        const c = new GameObject(-3, 2, new Circle(2), true);
+        // console.log(sat2(a.collidable, b.collidable));
+        const info = sat2(a.collidable, b.collidable);
+        c.translate(info.normalA.clone().multiplyScalar(info.depth));
+        // const c = new GameObject(4, 2, new Circle(2.5), true);
+        // console.log(sat2(a.collidable, b.collidable));
+        // console.log(sat2(b.collidable, c.collidable));
 
-        for (const edge of a.collidable.edges) {
-            const info = edgeCircleQuery(edge, b.collidable);
+        for (const edge of b.collidable.edges) {
+            const info = edgeCircleQuery(edge, a.collidable);
             const color = randomColor();
-            console.log(info);
+            // console.log(info);
             this.#addArrow(edge.tail(), edge.asVector(), color);
             this.#addArrow(edge.at(0.5), edge.normal(), color);
             this.#addPoint(info.edgePoint, color);
             this.#addPoint(info.circlePoint, color);
         }
-        // sat2(a.collidable, b.collidable);
+        // const foo = new GameObject(0, 0, new Circle(1), true);
+        // const bar = new GameObject(1.5, 0, new Circle(1), true);
+        // console.log(sat2(foo.collidable, bar.collidable));
 
         // console.log(sat2(a.collidable, b.collidable));
         // const b = new GameObject(-1, 0, Polygon.ngon(4, 1), true);

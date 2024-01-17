@@ -75,7 +75,7 @@ export class Edge {
     }
 
     /**@param {Vector2} point*/
-    containsPoint(point) {
+    contains(point) {
         return (
             this.tail().distanceTo(point) + this.head().distanceTo(point) ===
             this.asVector().length()
