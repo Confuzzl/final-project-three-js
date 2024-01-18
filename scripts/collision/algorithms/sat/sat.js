@@ -1,10 +1,10 @@
-import { Collidable } from "../collidable.js";
-import { Polygon } from "../polygon.js";
-import { Edge } from "../edge.js";
-import { Circle } from "../circle.js";
+import { Collidable } from "../../collidable.js";
+import { Polygon } from "../../polygon.js";
+import { Edge } from "../../edge.js";
+import { Circle } from "../../circle.js";
 import { Vector2 } from "three";
-import { AABB } from "../aabb.js";
-import { Axis } from "./axis.js";
+import { AABB } from "../../aabb.js";
+import { Axis } from "../axis.js";
 
 /**
  * @param {Collidable} a

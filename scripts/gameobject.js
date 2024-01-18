@@ -48,6 +48,15 @@ export class GameObject {
         MAIN_SIMULATION.addGameObject(this);
     }
 
+    clone() {
+        return new GameObject(
+            this.collidable.centroid.x,
+            this.collidable.centroid.y,
+            this.collidable.clone(),
+            this.showAABB
+        );
+    }
+
     /**@param {boolean} b */
     toggleAABB(b) {
         this.showAABB = b;
@@ -76,7 +85,6 @@ export class GameObject {
     /**@param {Vector2} v */
     translate(v) {
         this.collidable.translate(v);
-        // this.group.position.add(new Vector3(v.x, v.y, 0));
         this.#refreshPosition();
     }
 
@@ -84,13 +92,6 @@ export class GameObject {
     rotate(theta) {
         this.collidable.rotate(theta);
         this.mainMesh.rotateZ(theta);
-        // this.aabbMesh = aabbToMesh(
-        //     this.collidable.aabb,
-        //     this.mainMesh.material.color
-        // );
         transformAABB(this.collidable, this.aabbMesh);
-        // const size = this.collidable.aabb.size();
-        // this.aabbMesh.scale.x = size.x;
-        // this.aabbMesh.scale.y = size.y;
     }
 }

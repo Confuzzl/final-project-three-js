@@ -22,12 +22,12 @@ import {
 import { Camera2D } from "./camera2d.js";
 import { collidableToMesh, aabbToMesh, randomColor } from "../rendering.js";
 import { Circle } from "../collision/circle.js";
-import { isColliding } from "../collision/algorithms/sat.js";
+import { isColliding } from "../collision/algorithms/sat/sat.js";
 import { Polygon } from "../collision/polygon.js";
 import { Collidable } from "../collision/collidable.js";
 import { GameObject } from "../gameobject.js";
 import { Simulation } from "../simulation.js";
-import { edgeCircleQuery, sat2 } from "../collision/algorithms/sat2.js";
+import { queryCollision } from "../collision/algorithms/sat/sat2.js";
 import { Edge } from "../collision/edge.js";
 
 export class Scene2D extends Scene {
@@ -117,28 +117,43 @@ export class Scene2D extends Scene {
         const a = new GameObject(-3, 2, new Circle(2), true);
         const b = new GameObject(
             -1,
-            4,
+            4.5,
             Polygon.ngon(4, 1 * Math.SQRT2, Math.PI / 4),
-            // Polygon.ngon(3, 1),
             true
         );
-        const c = new GameObject(-3, 2, new Circle(2), true);
-        // console.log(sat2(a.collidable, b.collidable));
-        const info = sat2(a.collidable, b.collidable);
-        c.translate(info.normalA.clone().multiplyScalar(info.depth));
-        // const c = new GameObject(4, 2, new Circle(2.5), true);
-        // console.log(sat2(a.collidable, b.collidable));
-        // console.log(sat2(b.collidable, c.collidable));
+        const info = queryCollision(a.collidable, b.collidable);
+        // console.log(queryCollision(a.collidable, b.collidable));
+        // console.log(info.getPush());
+        const c = b.clone();
+        c.translate(new Vector2(0, -5));
+        console.log(this.children[1].children[0]);
+        console.log(this.children[2].children[0]);
+        // c.translate(info.getPush());
 
-        for (const edge of b.collidable.edges) {
-            const info = edgeCircleQuery(edge, a.collidable);
-            const color = randomColor();
-            // console.log(info);
-            this.#addArrow(edge.tail(), edge.asVector(), color);
-            this.#addArrow(edge.at(0.5), edge.normal(), color);
-            this.#addPoint(info.edgePoint, color);
-            this.#addPoint(info.circlePoint, color);
-        }
+        // const info = sat2(a.collidable, b.collidable);
+        // const c = new GameObject(-3, 2, new Circle(2), true);
+        // c.translate(info.normalA.clone().multiplyScalar(info.depth));
+
+        // const info = sat2(b.collidable, a.collidable);
+        // const d = new GameObject(
+        //     -1,
+        //     4.25,
+        //     Polygon.ngon(4, 1 * Math.SQRT2, Math.PI / 4),
+        //     // Polygon.ngon(3, 1),
+        //     true
+        // );
+        // d.translate(info.normalA.clone().multiplyScalar(info.depth));
+
+        // for (const edge of b.collidable.edges) {
+        //     const info = edgeCircleQuery(edge, a.collidable);
+        //     const color = randomColor();
+        //     // console.log(info);
+        //     this.#addArrow(edge.tail(), edge.asVector(), color);
+        //     this.#addArrow(edge.at(0.5), edge.normal(), color);
+        //     this.#addPoint(info.edgePoint, color);
+        //     this.#addPoint(info.circlePoint, color);
+        // }
+
         // const foo = new GameObject(0, 0, new Circle(1), true);
         // const bar = new GameObject(1.5, 0, new Circle(1), true);
         // console.log(sat2(foo.collidable, bar.collidable));

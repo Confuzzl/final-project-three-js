@@ -11,11 +11,10 @@ export class Circle extends Collidable {
     constructor(radius) {
         super();
         this.radius = radius;
+    }
 
-        // this.aabb = new AABB(
-        //     new Vector2().subScalar(radius),
-        //     new Vector2().addScalar(radius)
-        // );
+    clone() {
+        return new Circle(this.radius);
     }
 
     /**@param {Vector2} point*/

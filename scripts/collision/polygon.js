@@ -22,6 +22,10 @@ export class Polygon extends Collidable {
         );
     }
 
+    clone() {
+        return new Polygon(structuredClone(this.localVertices));
+    }
+
     globalVertices() {
         return this.localVertices.map((v) => {
             const rot = this.rotation;

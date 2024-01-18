@@ -14,6 +14,9 @@ export class Collidable {
 
     constructor() {}
 
+    /**@abstract*/
+    clone() {}
+
     centroidArray() {
         return [this.centroid.x, this.centroid.y, 0];
     }
