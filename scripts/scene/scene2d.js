@@ -22,7 +22,6 @@ import {
 import { Camera2D } from "./camera2d.js";
 import { collidableToMesh, aabbToMesh, randomColor } from "../rendering.js";
 import { Circle } from "../collision/circle.js";
-import { isColliding } from "../collision/algorithms/sat/sat.js";
 import { Polygon } from "../collision/polygon.js";
 import { Collidable } from "../collision/collidable.js";
 import { GameObject } from "../gameobject.js";
@@ -114,20 +113,22 @@ export class Scene2D extends Scene {
 
         // const a = new GameObject(1, 2, new Circle(1), true);
 
-        const a = new GameObject(-3, 2, new Circle(2), true);
-        const b = new GameObject(
-            -1,
-            4.5,
+        // const a = new GameObject(-3, 2, new Circle(2), true);
+        const a = new GameObject(
+            0,
+            0,
             Polygon.ngon(4, 1 * Math.SQRT2, Math.PI / 4),
-            true
+            false
         );
+        const b = new GameObject(1, 1, Polygon.ngon(3, 1), true);
         const info = queryCollision(a.collidable, b.collidable);
+
         // console.log(queryCollision(a.collidable, b.collidable));
         // console.log(info.getPush());
-        const c = b.clone();
-        c.translate(new Vector2(0, -5));
-        console.log(this.children[1].children[0]);
-        console.log(this.children[2].children[0]);
+        // const c = b.clone();
+        // c.translate(new Vector2(0, -5));
+        // console.log(this.children[1].children[0]);
+        // console.log(this.children[2].children[0]);
         // c.translate(info.getPush());
 
         // const info = sat2(a.collidable, b.collidable);

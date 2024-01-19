@@ -3,6 +3,7 @@ import { Circle } from "../../circle.js";
 import { CollisionInfo } from "./sat_util.js";
 import { depthHeuristic } from "./sat_util.js";
 import { Vector2 } from "three";
+import { edgeCircleQuery } from "./sat_util.js";
 
 /**
  * @param {Polygon} polygon
@@ -54,44 +55,4 @@ export function queryPolyCirc(polygon, circle, reversed) {
         out.calculateNormal();
     }
     return out;
-}
-
-/**
- * @param {Vector2} linePoint
- * @param {Vector2} lineDirection
- * @param {Vector2} normal
- * @param {Vector2} point
- */
-function linePointQuery(linePoint, lineDirection, normal, point) {
-    const difference = point.clone().sub(linePoint);
-    const direction = lineDirection.normalize();
-    const dot = difference.dot(direction);
-    const distance = difference.dot(normal);
-    return {
-        point: linePoint.clone().add(direction.multiplyScalar(dot)),
-        signedDistance: distance,
-    };
-}
-
-/**
- * @param {Edge} edge
- * @param {Circle} circle
- */
-function edgeCircleQuery(edge, circle) {
-    const info = linePointQuery(
-        edge.tail(),
-        edge.asVector(),
-        edge.normal(),
-        circle.centroid.clone()
-    );
-    const depth =
-        Math.sign(info.signedDistance) *
-        (Math.abs(info.signedDistance) - circle.radius);
-    return {
-        edgePoint: info.point.clone(),
-        circlePoint: info.point
-            .clone()
-            .add(edge.normal().multiplyScalar(depth)),
-        depth: depth,
-    };
 }
