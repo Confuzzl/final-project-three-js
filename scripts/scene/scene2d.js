@@ -28,6 +28,7 @@ import { GameObject } from "../gameobject.js";
 import { Simulation } from "../simulation.js";
 import { queryCollision } from "../collision/algorithms/sat/sat2.js";
 import { Edge } from "../collision/edge.js";
+import { Force } from "../collision/force.js";
 
 export class Scene2D extends Scene {
     renderer = new WebGLRenderer({ antialias: true });
@@ -111,67 +112,39 @@ export class Scene2D extends Scene {
     init() {
         this.camera.position.set(0, 0, 10);
 
-        // const a = new GameObject(1, 2, new Circle(1), true);
-
-        // const a = new GameObject(-3, 2, new Circle(2), true);
         const a = new GameObject(
-            0,
-            0,
-            Polygon.ngon(4, 1 * Math.SQRT2, Math.PI / 4),
-            false
+            { x: 0, y: 0 },
+            Polygon.new(4, {
+                radius: Math.SQRT2,
+                offset: Math.PI / 4,
+            }),
+            true
         );
-        const b = new GameObject(1, 1, Polygon.ngon(3, 1), true);
-        const info = queryCollision(a.collidable, b.collidable);
+        // a.applyForce(Force.new({ x: -1, y: 1 }, 0.001), { x: 0.5, y: -1 });
 
-        // console.log(queryCollision(a.collidable, b.collidable));
-        // console.log(info.getPush());
-        // const c = b.clone();
-        // c.translate(new Vector2(0, -5));
-        // console.log(this.children[1].children[0]);
-        // console.log(this.children[2].children[0]);
-        // c.translate(info.getPush());
-
-        // const info = sat2(a.collidable, b.collidable);
-        // const c = new GameObject(-3, 2, new Circle(2), true);
-        // c.translate(info.normalA.clone().multiplyScalar(info.depth));
-
-        // const info = sat2(b.collidable, a.collidable);
-        // const d = new GameObject(
-        //     -1,
-        //     4.25,
-        //     Polygon.ngon(4, 1 * Math.SQRT2, Math.PI / 4),
-        //     // Polygon.ngon(3, 1),
+        // const b = new GameObject(
+        //     { x: 2, y: 2 },
+        //     Polygon.new(3, { offset: Math.PI }),
         //     true
         // );
-        // d.translate(info.normalA.clone().multiplyScalar(info.depth));
 
-        // for (const edge of b.collidable.edges) {
-        //     const info = edgeCircleQuery(edge, a.collidable);
-        //     const color = randomColor();
-        //     // console.log(info);
-        //     this.#addArrow(edge.tail(), edge.asVector(), color);
-        //     this.#addArrow(edge.at(0.5), edge.normal(), color);
-        //     this.#addPoint(info.edgePoint, color);
-        //     this.#addPoint(info.circlePoint, color);
+        // b.applyForce({ x: 1, y: 0 }, { x: 1, y: 2 });
+
+        // b.rotate(1);
+
+        // const info = queryCollision(a.collidable, b.collidable);
+        // console.log(info);
+        // a.translate(info.getPush());
+        // const info = queryCollision(b.collidable, a.collidable);
+        // console.log(info);
+        // b.translate(info.getPush());
+
+        // for (const edge of a.collidable.edges) {
+        //     this.#addArrow(edge.tail(), edge.asVector(), randomColor());
         // }
-
-        // const foo = new GameObject(0, 0, new Circle(1), true);
-        // const bar = new GameObject(1.5, 0, new Circle(1), true);
-        // console.log(sat2(foo.collidable, bar.collidable));
-
-        // console.log(sat2(a.collidable, b.collidable));
-        // const b = new GameObject(-1, 0, Polygon.ngon(4, 1), true);
-        // this.a.rotate(0.5);
-        // console.log(this.a.collidable.centroid);
-        // console.log(this.a.collidable.localVertices);
-        // console.log(this.a.collidable.globalVertices());
-        // console.log(this.a.collidable.aabb);
-
-        // const dir = new Vector3(0.5, -0.86602540378, 0);
-        // const dir = new Vector3(-0.70710678118, 0.70710678118, 0);
-        // const dir2 = dir.clone().negate();
-        // super.add(new ArrowHelper(dir, new Vector3(), 5, 0xff0000));
-        // super.add(new ArrowHelper(dir2, new Vector3(), 5, 0x00ffff));
+        // for (const edge of b.collidable.edges) {
+        //     this.#addArrow(edge.tail(), edge.asVector(), randomColor());
+        // }
 
         const grid = new GridHelper(
             this.gridSize,

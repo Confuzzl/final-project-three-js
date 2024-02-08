@@ -41,6 +41,7 @@ const maxDepthHeuristic = (value, old) => {
     return value < old;
 };
 export const depthHeuristic = minDepthHeuristic;
+console.log(`DEPTH HEURISTIC: ${depthHeuristic.name}`);
 
 /**
  * @param {Polygon} a

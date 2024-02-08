@@ -2,7 +2,7 @@ import { Vector2, Vector3 } from "three";
 
 export class Edge {
     /**@type {Polygon}*/
-    #parent = null;
+    parent = null;
     #tail = new Vector2();
     #head = new Vector2();
     #normal = new Vector2();
@@ -13,7 +13,7 @@ export class Edge {
      * @param {Vector2} head
      */
     constructor(parent, tail, head) {
-        this.#parent = parent;
+        this.parent = parent;
         this.#tail = tail;
         this.#head = head;
         this.#normal = this.#calculateNormal();
@@ -22,7 +22,7 @@ export class Edge {
     normal() {
         const x = this.#normal.x,
             y = this.#normal.y;
-        const rot = this.#parent.rotation;
+        const rot = this.parent.rotation;
         const cos = Math.cos(rot),
             sin = Math.sin(rot);
         return new Vector2(x * cos - y * sin, y * cos + x * sin);
@@ -39,7 +39,7 @@ export class Edge {
     }
 
     tail() {
-        const rot = this.#parent.rotation;
+        const rot = this.parent.rotation;
         const cos = Math.cos(rot),
             sin = Math.sin(rot);
         const x = this.#tail.x,
@@ -47,11 +47,11 @@ export class Edge {
         const newX = x * cos - y * sin;
         const newY = y * cos + x * sin;
         const rotated = new Vector2(newX, newY);
-        return rotated.add(this.#parent.centroid);
+        return rotated.add(this.parent.centroid);
     }
 
     head() {
-        const rot = this.#parent.rotation;
+        const rot = this.parent.rotation;
         const x = this.#head.x,
             y = this.#head.y;
         const cos = Math.cos(rot),
@@ -59,7 +59,7 @@ export class Edge {
         const newX = x * cos - y * sin;
         const newY = y * cos + x * sin;
         const rotated = new Vector2(newX, newY);
-        return rotated.add(this.#parent.centroid);
+        return rotated.add(this.parent.centroid);
     }
 
     asVector() {

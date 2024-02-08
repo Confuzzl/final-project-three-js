@@ -25,12 +25,8 @@ export class GameObject {
 
     static = false;
 
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @param {Collidable} collidable
-     * */
-    constructor(x, y, collidable, showAABB = false) {
+    /**@param {Collidable} collidable*/
+    constructor({ x = 0, y = 0 }, collidable, showAABB = false) {
         this.group.name = `GAMEOBJECT_${GameObject.COUNT++}`;
         this.color = randomColor();
 
@@ -50,8 +46,7 @@ export class GameObject {
 
     clone() {
         return new GameObject(
-            this.collidable.centroid.x,
-            this.collidable.centroid.y,
+            this.collidable.centroid,
             this.collidable.clone(),
             this.showAABB
         );
@@ -74,24 +69,48 @@ export class GameObject {
     update(dt) {
         if (this.static) return;
         this.collidable.update(dt);
-        this.#refreshPosition();
+        this.refresh();
     }
 
+    refresh() {
+        this.#refreshPosition();
+        this.#refreshRotation();
+    }
     #refreshPosition() {
         this.group.position.x = this.collidable.centroid.x;
         this.group.position.y = this.collidable.centroid.y;
+    }
+    #refreshRotation() {
+        this.mainMesh.setRotationFromAxisAngle(
+            new Vector3(0, 0, 1),
+            this.collidable.rotation
+        );
+        transformAABB(this.collidable, this.aabbMesh);
+    }
+
+    /**
+     * @param {{
+     * x: number,
+     * y: number
+     * }} f
+     * @param {{
+     * x: number,
+     * y: number
+     * }} p
+     */
+    applyForce(f, p) {
+        this.collidable.applyForce(f, p);
     }
 
     /**@param {Vector2} v */
     translate(v) {
         this.collidable.translate(v);
-        this.#refreshPosition();
+        // this.#refreshPosition();
     }
 
     /**@param {number} theta */
     rotate(theta) {
         this.collidable.rotate(theta);
-        this.mainMesh.rotateZ(theta);
-        transformAABB(this.collidable, this.aabbMesh);
+        // this.#refreshRotation();
     }
 }

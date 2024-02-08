@@ -4,6 +4,7 @@ import { Circle } from "../../circle.js";
 import { queryCircCirc } from "./circcirc.js";
 import { queryPolyCirc } from "./polycirc.js";
 import { queryPolyPoly } from "./polypoly.js";
+import { CollisionInfo } from "./sat_util.js";
 
 // https://www.cs.ubc.ca/~rhodin/2020_2021_CPSC_427/lectures/D_CollisionTutorial.pdf
 
@@ -12,6 +13,8 @@ import { queryPolyPoly } from "./polypoly.js";
  * @param {Collidable} b
  */
 export function queryCollision(a, b) {
+    if (!a.aabb.intersects(b.aabb)) return new CollisionInfo();
+
     if (a instanceof Circle) {
         if (b instanceof Circle) return queryCircCirc(a, b);
         if (b instanceof Polygon) return queryPolyCirc(b, a, true);

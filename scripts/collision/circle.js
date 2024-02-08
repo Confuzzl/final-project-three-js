@@ -8,13 +8,22 @@ export class Circle extends Collidable {
     radius = 0;
 
     /**@param {number} radius*/
-    constructor(radius) {
-        super();
+    constructor(mass = 1, radius) {
+        super(mass);
         this.radius = radius;
+        this.moi = this.#calculateMOI();
     }
 
+    static new({ mass = 1, radius = 1 }) {
+        return new Circle(mass, radius);
+    }
     clone() {
         return new Circle(this.radius);
+    }
+
+    #calculateMOI() {
+        // https://www.youtube.com/watch?v=TAML8pPbwEs
+        return (this.mass * this.radius * this.radius) / 2;
     }
 
     /**@param {Vector2} point*/
